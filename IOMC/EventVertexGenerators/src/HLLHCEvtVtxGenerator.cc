@@ -1,5 +1,7 @@
 // $Id: HLLHCEvtVtxGenerator.cc,v 1.3 2013/05/01 12:41:54 aryd Exp $
 
+// EP: a dummy comment for git tests...
+
 #include "IOMC/EventVertexGenerators/interface/HLLHCEvtVtxGenerator.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
