@@ -33,7 +33,6 @@ class ModuleGeometry {
 public:
 
   ModuleGeometry() {
-
     x0_=0.0;
     y0_=0.0;
     z0_=0.0;

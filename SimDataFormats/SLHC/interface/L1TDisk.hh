@@ -82,8 +82,12 @@ public:
 	    double dist=sqrt(r2*r2+r1*r1-2*r1*r2*cos(deltaphi));
         
 	    double rinv=2*sin(deltaphi)/dist;
+
+	    double tmp=0.5*r1*rinv;
 	    
-	    double phi0=phi1+asin(0.5*r1*rinv);
+	    if (fabs(tmp)>=1.0) continue;
+	    
+	    double phi0=phi1+asin(tmp);
 
 	    if (phi0>0.5*two_pi) phi0-=two_pi;
 	    if (phi0<-0.5*two_pi) phi0+=two_pi;

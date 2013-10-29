@@ -2,12 +2,23 @@ import FWCore.ParameterSet.Config as cms
 
 from SLHCUpgradeSimulations.L1CaloTrigger.SLHCCaloTrigger_cfi import *
 
-SLHCCaloTrigger  = cms.Sequence(L1CaloTowerProducer+
-                                #	L1RingSubtractionProducer+
+SLHCCaloTrigger  = cms.Sequence(#L1TestPatternCaloTowerProducer+
+                                L1CaloTowerProducer+
+                                L1RingSubtractionProducer+
                                 L1CaloRegionProducer+
                                 L1CaloClusterProducer+
                                 L1CaloClusterFilter+
                                 L1CaloClusterIsolator+
+                                L1CaloClusterEGFilter+
+                                L1CaloClusterEGIsolator+
+				## New e/g clustering
+                                L1CaloProtoClusterProducer+
+                                L1CaloProtoClusterFilter+
+                                L1CaloProtoClusterSharing+
+				L1CaloEgammaClusterProducer+
+				L1CaloExtendedEgammaClusterProducer+
+				L1CaloExtendedEgammaClusterIsolator+
+				## End new e/g clustering
                                 L1CaloJetProducer+
                                 L1CaloJetFilter+
                                 L1TowerJetProducer+
@@ -20,10 +31,13 @@ SLHCCaloTrigger  = cms.Sequence(L1CaloTowerProducer+
                                 # L1TowerFwdJetProducer+
                                 # L1TowerFwdJetFilter1D+
                                 # L1TowerFwdJetFilter2D+
-
+                                L1CaloJetExpander+
                                 rawSLHCL1ExtraParticles+
+                                rawSLHCL1ExtraParticlesNewClustering+
                                 SLHCL1ExtraParticles+
-                                l1extraParticlesCalibrated
+                                SLHCL1ExtraParticlesNewClustering
+                             
+                                #l1extraParticlesCalibrated
 )
 
 #uncomment the lines below for verbose (Huge amount of printouts!)
