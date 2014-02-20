@@ -1,0 +1,14 @@
+
+<library file="*.cc" name="L1TrackTriggerObjectsPlugin">
+<use name="SLHCUpgradeSimulations/L1TrackTriggerObjects"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/L1TrackTrigger"/>
+<use name="SLHCUpgradeSimulations/L1TrackTrigger"/>
+<use name="SLHCUpgradeSimulations/L1CaloTrigger"/>
+<use name="DataFormats/JetReco"/>
+<use name="hepmc"/>
+<use name="root"/>
+</library>
+
