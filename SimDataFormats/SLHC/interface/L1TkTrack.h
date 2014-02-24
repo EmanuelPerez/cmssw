@@ -37,6 +37,8 @@ class L1TkTrack
     double                                    theChi2;
     edm::Ptr< SimTrack >                      theSimTrack;
     int                                       theSimTrackId;
+    double	compatibilityPT ;
+    double      theEta ;
 
   public:
     /// Constructors
@@ -45,6 +47,11 @@ class L1TkTrack
 
     /// Destructor
     ~L1TkTrack();
+
+    void setCompatibility( double sumPt)  { compatibilityPT = sumPt; } 
+    double  getCompatibility() { return compatibilityPT ; }
+    void settheEta( double t) { theEta = t ; }
+    double gettheEta() { return theEta ; }
 
     /// Track components
     std::vector< edm::Ptr< L1TkStub< T > > > getStubPtrs() const;

@@ -224,6 +224,17 @@ public:
 	      dist=hypot(rdeltaphi/rphicut2,deltar/rcut2);
 	    }
 	    
+	// ---------------------------
+	// from 62X code
+            double pt1=D->stubs_[jSector][j].pt();
+            double pttracklet=aTracklet.pt(3.8);
+            bool pass1=fabs(1.0/pt1-1.0/pttracklet)<0.5;
+
+            if (!pass1) continue;
+        // ---------------------------
+
+
+
 	    if (dist<bestdist){
 	      bestdist=dist;
 	      tmp=D->stubs_[jSector][j];

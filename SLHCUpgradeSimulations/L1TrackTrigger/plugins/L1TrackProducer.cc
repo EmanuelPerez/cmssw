@@ -647,6 +647,25 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 								  track.phi0(), 
 								  fabs(track.pt(mMagneticFieldStrength))*sinh(track.eta())) ) );
 
+	// EP. get compatibility PT variable...
+
+    vector< edm::Ptr < L1TkStubType > > TheStubs = TkTrack.getStubPtrs();
+    unsigned int mstubs = TheStubs.size();
+    double SumPt = 0. ;
+    double theTrackPt = fabs( TkTrack.getMomentum().perp() );
+    double theEta = TkTrack.getMomentum().eta();
+    TkTrack.settheEta( theEta );
+
+    for ( unsigned int i=0; i < mstubs; i++) {
+       edm::Ptr < L1TkStubType > theStubPtr = TheStubs.at(i);
+       double stubPt = theStackedGeometry->findRoughPt(mMagneticFieldStrength,&(*theStubPtr));
+       stubPt = fabs( stubPt );
+       double delta = fabs( 1./theTrackPt - 1./stubPt );
+       SumPt += delta;
+    }
+    TkTrack.setCompatibility( SumPt );
+
+
     L1TkTracksForOutput->push_back(TkTrack);
 
     //L1TTracklet tracklet = track.getSeed();
