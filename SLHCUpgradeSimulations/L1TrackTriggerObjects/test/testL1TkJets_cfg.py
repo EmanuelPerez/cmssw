@@ -78,7 +78,7 @@ process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDi
 
 process.load("SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkJetProducer_cfi")
 process.L1TkJetsL1 = process.L1TkJets.clone()
-process.pL1TkJetsL1 = cms.Path( L1TkJetsL1 )
+process.pL1TkJetsL1 = cms.Path( process.L1TkJetsL1 )
 
 # ---------------------------------------------------------------------------
 
