@@ -29,9 +29,11 @@ from SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkHTMissProducer_cfi import 
 
 L1TkHTMissCaloHI = L1TkHTMissCalo.clone()
 L1TkHTMissCaloHI.L1TkJetInputTag = cms.InputTag("L1TkJetsHI","Central")
+L1TkHTMissCaloHI.JET_HLTETA = cms.bool(True)
 
 L1TkHTMissVtxHI = L1TkHTMissVtx.clone()
 L1TkHTMissVtxHI.L1TkJetInputTag = cms.InputTag("L1TkJetsHI","Central")
+L1TkHTMissVtxHI.JET_HLTETA = cms.bool(True)
 
 
 # --- the full sequence with the L1Jets :
