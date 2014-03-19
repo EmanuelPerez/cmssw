@@ -39,9 +39,12 @@ namespace l1slhc
 		// Jet iEta and iPhi parameters (Eta and phi of top-left reference TT)
 		const int& iEta(  ) const;
 		const int& iPhi(  ) const;
-		// Total TT energy sum
-		const int& E(  ) const;
+		// Total TT energy sum (GeV)
+		const double& E(  ) const;
 		const bool& central(  ) const;
+
+		// centrality member variables
+		const double& Centrality( ) const;
 
 		//asymmetry member variables
 		const int& AsymEta(  ) const;
@@ -73,6 +76,9 @@ namespace l1slhc
 		const double& JetRealArea( ) const;
 
 
+/* 		const double& MaxTTEnergy( ) const; */
+/* 		const double& MaxTTEnergyInSeedRegion( ) const; */
+
 //              possibly helpful methods
 //		double EcalVariance(  ) const;
 //		double HcalVariance(  ) const;
@@ -85,22 +91,11 @@ namespace l1slhc
 		// Setters
 		// ~~~~~~~
 		void setP4( const math::PtEtaPhiMLorentzVector & p4 );
+		void setPt( const double & pT );
 		void setCentral( const bool& );
-		
-		// Should not be modified
-		//void setE( const int& );
 
-		/*
-                void CalcWeightediEta();
-                void CalcWeightediPhi();
-		*/
-
-		// Calculate the energy weighted eta and phi
-		/*
-		void calculateWeightedEta();
-		void calculateWeightedPhi();
-		*/
-
+		// Calculate the jet centrality
+		void calculateCentrality();
 		// Determine the central jet eta and phi for unweighted and energy weighting
 		void calculateJetCenter();
 		void calculateWeightedJetCenter();
@@ -119,12 +114,22 @@ namespace l1slhc
 		// i-coordinates, define the top left TT of the jet
 		int mIeta;
 		int mIphi;
-		int mE;
+		// Energy of jet in 2 GeV units: 1 -> 2 GeV (REMOVE THIS)
+		int mE2GeV;
+		// True value of E in GeV
+		double mE;
+
+/* 		int mMaxTTEnergy2GeV; */
+/*                 int mMaxTTEnergyInSeedRegion2GeV;  */
+
 		bool mCentral;
 
                 // Asymmetry parameters
 		int mAsymEta;
 		int mAsymPhi;
+		
+		// Centrality parameter
+		double mCentrality;
 
                 //weighted eta and phi
 		/*double mWeightedIeta;
@@ -146,6 +151,8 @@ namespace l1slhc
 		// Actual eta*phi jet area
 		double mJetRealArea;
 
+		// Undo wrapping of iPhi 
+		int iPhiUnwrap(int aIphi);
 
 		// Tower geometry converter
 		static TriggerTowerGeometry mTowerGeo;
@@ -166,12 +173,13 @@ namespace l1slhc
 }
 
 
-// Sorting functor
+// Jet rank operator
 namespace std{
-	bool operator< ( const l1slhc::L1TowerJet & aLeft,  const l1slhc::L1TowerJet & aRight );
+    bool operator<( const l1slhc::L1TowerJet & aLeft, const l1slhc::L1TowerJet & aRight );
+    bool operator>( const l1slhc::L1TowerJet & aLeft, const l1slhc::L1TowerJet & aRight );
 }
 
-
+// Jet printing
 std::ostream & operator<<( std::ostream & , const l1slhc::L1TowerJet & );
 
 #endif
