@@ -79,18 +79,16 @@ process.hireco = cms.Path( process.hiRecoJets )
 process.L1JetsFromHIHLTJets = cms.EDProducer("L1JetsFromHIHLTJets",
         ETAMIN = cms.double(0),
         ETAMAX = cms.double(3.),
-	HIJetsInputTag = cms.InputTag("iterativeConePu5CaloJets")
+        HIJetsInputTag = cms.InputTag("iterativeConePu5CaloJets")
 )
 process.pL1Jets = cms.Path( process.L1JetsFromHIHLTJets )
 
 
 # --- Produce L1TkJets
-process.L1TkJets = cms.EDProducer("L1TkJetProducer",
-        L1CentralJetInputTag = cms.InputTag("L1JetsFromHIHLTJets"),     
-        L1TrackInputTag = cms.InputTag("L1Tracks","Level1TkTracks"),
-)
-process.pJets = cms.Path( process.L1TkJets )
-
+process.L1TkJetsHI = process.L1TkJets.clone()
+process.L1TkJetsHI.L1CentralJetInputTag = cms.InputTag("L1JetsFromHIHLTJets")
+process.L1TkJetsHI.JET_HLTETA = cms.bool(True)
+process.pJets = cms.Path( process.L1TkJetsHI )
 
 
 

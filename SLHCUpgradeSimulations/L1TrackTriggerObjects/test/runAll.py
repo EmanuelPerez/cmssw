@@ -74,6 +74,8 @@ process.load('Configuration/StandardSequences/L1HwVal_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load("SLHCUpgradeSimulations.L1CaloTrigger.SLHCCaloTrigger_cff")
 
+process.L1CalibFilterTowerJetProducer.pTCalibrationThreshold = cms.double(40) # applies calibration only to > 40GeV L1 jets
+
 process.p = cms.Path(
     process.RawToDigi+
     process.SLHCCaloTrigger
@@ -125,7 +127,7 @@ process.pJets = cms.Path( process.L1TkJets )
 
 process.load("SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkHTMissProducer_cfi")
 process.pHTMCalo = cms.Path( process.L1TkHTMissCalo )		# calo only, no vtx constraint
-process.pHTMVtx  = cms.Path( process.L1TkHTMissVtx )	     	# HT and MHT from jets that come from the same vertex
+process.pHTMVtx  = cms.Path( process.L1TkHTMissVtx )	    # HT and MHT from jets that come from the same vertex
 
 
 # ---------------------------------------------------------------------------

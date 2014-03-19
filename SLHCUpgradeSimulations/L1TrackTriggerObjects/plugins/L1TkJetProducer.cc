@@ -79,12 +79,16 @@ private:
   edm::InputTag L1TrackInputTag;
 
   // track selection criteria
-  float TRK_ZMAX;       // cm
-  float TRK_CHI2MAX;
-  float TRK_PTMIN;      // GeV
-  float TRK_ETAMAX;
+  float TRK_ZMAX;       // [cm]
+  float TRK_CHI2MAX;    // maximum track chi2
+  float TRK_PTMIN;      // [GeV]
+  float TRK_ETAMAX;     // [rad]
   int   TRK_NSTUBMIN;   // minimum number of stubs 
   int   TRK_NSTUBPSMIN; // minimum number of stubs in PS modules 
+
+  // jet cut 
+  bool JET_HLTETA;  // temporary hack to remove bad jets when using HI HLT jets!
+
 
   // geometry for stub info
   const StackedTrackerGeometry* theStackedGeometry;
@@ -95,19 +99,20 @@ private:
 // constructor
 L1TkJetProducer::L1TkJetProducer(const edm::ParameterSet& iConfig)
 {
-
-   L1CentralJetInputTag = iConfig.getParameter<edm::InputTag>("L1CentralJetInputTag");
-   L1TrackInputTag = iConfig.getParameter<edm::InputTag>("L1TrackInputTag");
-   
-   produces<L1TkJetParticleCollection>("Central");
-   
-   TRK_ZMAX    = (float)iConfig.getParameter<double>("TRK_ZMAX");
-   TRK_CHI2MAX = (float)iConfig.getParameter<double>("TRK_CHI2MAX");
-   TRK_PTMIN   = (float)iConfig.getParameter<double>("TRK_PTMIN");
-   TRK_ETAMAX  = (float)iConfig.getParameter<double>("TRK_ETAMAX");
-   TRK_NSTUBMIN   = (int)iConfig.getParameter<int>("TRK_NSTUBMIN");
-   TRK_NSTUBPSMIN = (int)iConfig.getParameter<int>("TRK_NSTUBPSMIN");
-
+  
+  L1CentralJetInputTag = iConfig.getParameter<edm::InputTag>("L1CentralJetInputTag");
+  L1TrackInputTag = iConfig.getParameter<edm::InputTag>("L1TrackInputTag");
+  
+  produces<L1TkJetParticleCollection>("Central");
+  
+  TRK_ZMAX    = (float)iConfig.getParameter<double>("TRK_ZMAX");
+  TRK_CHI2MAX = (float)iConfig.getParameter<double>("TRK_CHI2MAX");
+  TRK_PTMIN   = (float)iConfig.getParameter<double>("TRK_PTMIN");
+  TRK_ETAMAX  = (float)iConfig.getParameter<double>("TRK_ETAMAX");
+  TRK_NSTUBMIN   = (int)iConfig.getParameter<int>("TRK_NSTUBMIN");
+  TRK_NSTUBPSMIN = (int)iConfig.getParameter<int>("TRK_NSTUBPSMIN");
+  JET_HLTETA = (bool)iConfig.getParameter<bool>("JET_HLTETA");
+  
 }
 
 /////////////
@@ -172,9 +177,9 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     float trk_sum_z0 = 0;
     float trk_sum_pt = 0;
-    float jet_z0_v0 = -999;
-    float jet_z0_v1 = -999;
-    float jet_z0_v2 = -999;
+    float jet_z0_v0 = 999;
+    float jet_z0_v1 = 999;
+    float jet_z0_v2 = 999;
     
     float sumTrk_pt = 0;
 
@@ -189,6 +194,12 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       float tmp_jet_eta = jetIter->eta();
       float tmp_jet_phi = jetIter->phi();
 
+      // for HI-HLT jets, remove jets from "hot spots"
+      if (JET_HLTETA) {
+	if ( (tmp_jet_eta > -2.0) && (tmp_jet_eta < -1.5) && (tmp_jet_phi > -1.7) && (tmp_jet_phi < -1.3) ) continue;
+	if ( (tmp_jet_eta > 0.0) && (tmp_jet_eta < 1.4) && (tmp_jet_phi > -2.0) && (tmp_jet_phi < -1.6) ) continue;
+      }
+
       // only consider jets from the central BX
       int ibx = jetIter->bx();
       if (ibx != 0) continue;
@@ -198,7 +209,7 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // calculate the vertex of the jet
       // ----------------------------------------------------------------------------------------------
 
-      float this_zpos = 9999.;
+      float this_zpos = 999.;
       bool this_continue = true;
       
       TH1F* h_start_trk = new TH1F("start_trk", "; z_{0} [cm]; # tracks / 2cm", 25,-25,25);
@@ -262,9 +273,9 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }//end track loop
       // ----------------------------------------------------------------------------------------------------------------
 
-      jet_z0_v0 = -999;
-      jet_z0_v1 = -999;
-      jet_z0_v2 = -999;
+      jet_z0_v0 = 999;
+      jet_z0_v1 = 999;
+      jet_z0_v2 = 999;
       
       int ntrkCone = v_trk_z0.size();
 
@@ -272,7 +283,7 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // STEP (0)
       // ----------------------------------------------------------------------------------------------------------------
       if (ntrkCone < 1) {
-	this_zpos = 9999.;
+	this_zpos = 999.;
 	this_continue = false; 
 	h_start_trk->Delete();
       }
@@ -312,7 +323,7 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	
 	if (ntrkCone < 1) {
-	  this_zpos = 9999.;
+	  this_zpos = 999.;
 	  this_continue = false; 
 	}
       }
@@ -339,7 +350,7 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	
 	if (ntrkCone < 1) {
-	  this_zpos = 9999.;
+	  this_zpos = 999.;
 	  this_continue = false;
 	}
       }

@@ -56,6 +56,7 @@ process.load('Configuration/StandardSequences/EndOfProcess_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load("SLHCUpgradeSimulations.L1CaloTrigger.SLHCCaloTrigger_cff")
 
+process.L1CalibFilterTowerJetProducer.pTCalibrationThreshold = cms.double(40) # applies calibration only to > 40GeV L1 jets
 
 process.p = cms.Path(
     process.RawToDigi+
@@ -78,7 +79,6 @@ process.L1CaloTowerProducer.HCALDigis =  cms.InputTag("valHcalTriggerPrimitiveDi
 # --- Load the L1TkCaloSequence :
 
 process.load("SLHCUpgradeSimulations.L1TrackTriggerObjects.L1TkCaloSequence_cff")
-
 
 # -- Produce L1TkJets, HT and MHT from the L1Jets :
 process.L1TkCaloL1Jets = cms.Path( process.L1TkCaloSequence )
@@ -106,8 +106,11 @@ process.Out.outputCommands.append('keep *_l1extraParticles_*_*')
 process.Out.outputCommands.append('keep *_L1TkHTMiss*_*_*')
 process.Out.outputCommands.append('keep *_L1TkJets*_*_*')
 process.Out.outputCommands.append('keep *_iterativeConePu5CaloJets_*_*')
-process.Out.outputCommands.append('keep *_L1TowerJetPUSubtractedProducer_PUSubCen8x8_*')
+#process.Out.outputCommands.append('keep *_L1TowerJetPUSubtractedProducer_PUSubCen8x8_*')
+process.Out.outputCommands.append('keep *_L1CalibFilterTowerJetProducer_CalibratedTowerJets_*')
+process.Out.outputCommands.append('keep *_L1CalibFilterTowerJetProducer_UncalibratedTowerJets_*')
 
+process.Out.outputCommands.append('keep *_*_*_L1TkCalo')
 
 
 #process.Out.outputCommands.append('keep *')
