@@ -93,6 +93,8 @@ class L1TkFastVertexProducer : public edm::EDProducer {
 	float CHI2MAX;
 	float PTMINTRA ; 	// in GeV
 
+	float PTSAT;	// in GeV, saturation value
+
 	int nStubsmin ;		// minimum number of stubs 
 	int nStubsPSmin ;	// minimum number of stubs in PS modules 
 
@@ -134,6 +136,8 @@ L1TkFastVertexProducer::L1TkFastVertexProducer(const edm::ParameterSet& iConfig)
   ZMAX = (float)iConfig.getParameter<double>("ZMAX");
   CHI2MAX = (float)iConfig.getParameter<double>("CHI2MAX");
   PTMINTRA = (float)iConfig.getParameter<double>("PTMINTRA");
+
+  PTSAT = (float)iConfig.getParameter<double>("PTSAT");
 
   nStubsmin = iConfig.getParameter<int>("nStubsmin");
   nStubsPSmin = iConfig.getParameter<int>("nStubsPSmin");
@@ -252,6 +256,12 @@ L1TkFastVertexProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     if (fabs(z) > ZMAX ) continue;
     if (chi2 > CHI2MAX) continue;
     if (pt < PTMINTRA) continue;
+
+    // saturation :
+   if ( PTSAT > 0) {
+       if (pt > PTSAT) pt = PTSAT ;
+   }
+  
 
         // get the number of stubs and the number of stubs in PS layers
     float nPS = 0.;     // number of stubs in PS modules
