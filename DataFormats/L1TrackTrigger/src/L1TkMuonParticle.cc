@@ -47,6 +47,22 @@ int L1TkMuonParticle::bx() const {
         return dummy;
 }
 
+unsigned int L1TkMuonParticle::quality()  const {
+
+ int dummy = 999;
+
+ if ( muRef_.isNonnull() ) {
+        return (getMuRef() -> gmtMuonCand().quality() );
+ }
+ else {
+        return dummy;
+ 
+ }
+
+}
+
+
+
 
 
 

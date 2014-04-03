@@ -52,6 +52,9 @@
 #include "DataFormats/L1TrackTrigger/interface/L1TkJetParticleFwd.h"
 #include "DataFormats/L1TrackTrigger/interface/L1TkHTMissParticle.h"
 #include "DataFormats/L1TrackTrigger/interface/L1TkHTMissParticleFwd.h"
+#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticle.h"
+#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticleFwd.h"
+
 
 #include "TFile.h"
 #include "TH1F.h"
@@ -107,6 +110,9 @@ class L1TrackTriggerObjectsAnalyzer : public edm::EDAnalyzer {
 
 	// for L1TkHTMParticle
 	edm::InputTag L1TkHTMInputTag;
+
+	// for L1TkMuonParticle
+	edm::InputTag L1TkMuonsInputTag;
 };
 
 //
@@ -144,6 +150,8 @@ L1TrackTriggerObjectsAnalyzer::L1TrackTriggerObjectsAnalyzer(const edm::Paramete
   L1TkPhotonsInputTag = iConfig.getParameter<edm::InputTag>("L1TkPhotonsInputTag");
   L1TkJetsInputTag = iConfig.getParameter<edm::InputTag>("L1TkJetsInputTag");
   L1TkHTMInputTag = iConfig.getParameter<edm::InputTag>("L1TkHTMInputTag");
+  L1TkMuonsInputTag = iConfig.getParameter<edm::InputTag>("L1TkMuonsInputTag");
+
 }
 
 
@@ -338,6 +346,32 @@ L1TrackTriggerObjectsAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
     }
  }
 
+
+        //  
+        // ----------------------------------------------------------------------
+        // retrieve the L1TkMuons
+	//
+
+ edm::Handle<L1TkMuonParticleCollection> L1TkMuonsHandle;
+ iEvent.getByLabel(L1TkMuonsInputTag, L1TkMuonsHandle);
+ std::vector<L1TkMuonParticle>::const_iterator muIter;
+
+ if ( L1TkMuonsHandle.isValid() ) {
+    std::cout << " -----   L1TkMuonPaticle objects ---- " << std::endl;
+    for (muIter = L1TkMuonsHandle -> begin(); muIter != L1TkMuonsHandle->end(); ++muIter) {
+	float pt = muIter -> pt();
+	float eta = muIter -> eta();
+	float phi = muIter -> phi();
+	float zvtx = muIter -> getTrkzVtx();
+	unsigned int quality = muIter -> quality();
+	// access the quality via the reference :
+	const edm::Ref< L1MuonParticleCollection >	MuRef = muIter -> getMuRef();
+	unsigned int qualityBis = MuRef -> gmtMuonCand().quality();
+	std::cout << " a muon candidate pt eta phi " << pt << " " << eta << " " << phi << " zvertex = " << zvtx << std::endl;
+	std::cout << "   quality (the two qual flags are the same by definition) = " << quality << " " << qualityBis << std::endl;
+	
+    }
+ }
 
         //
         // ----------------------------------------------------------------------
