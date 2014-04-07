@@ -19,7 +19,6 @@
 #include "DataFormats/L1Trigger/interface/L1HFRings.h"
 #include "DataFormats/L1Trigger/interface/L1HFRingsFwd.h"
 #include "DataFormats/L1Trigger/interface/L1TriggerError.h"
-
 #include "DataFormats/Common/interface/Wrapper.h"
 #include "DataFormats/Common/interface/RefVector.h"
 #include "DataFormats/Common/interface/RefProd.h"

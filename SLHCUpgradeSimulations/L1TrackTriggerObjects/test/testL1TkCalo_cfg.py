@@ -112,6 +112,9 @@ process.Out.outputCommands.append('keep *_L1CalibFilterTowerJetProducer_Uncalibr
 
 process.Out.outputCommands.append('keep *_*_*_L1TkCalo')
 
+# keep the L1TkTracks if one needs the tracks associated with the jets 
+process.Out.outputCommands.append('keep *_L1Tracks_Level1TkTracks_*')
+
 
 #process.Out.outputCommands.append('keep *')
 

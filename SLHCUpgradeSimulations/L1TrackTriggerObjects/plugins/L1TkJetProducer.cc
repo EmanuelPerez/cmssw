@@ -224,7 +224,12 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // track loop
       // ----------------------------------------------------------------------------------------------------------------
 
+      std::vector< edm::Ptr< L1TkTrackType > > L1TrackPtrs;
+      int itrk = -1;
+
       for (trackIter = L1TkTrackHandle->begin(); trackIter != L1TkTrackHandle->end(); ++trackIter) {
+	
+	itrk++;
 
 	float tmp_trk_pt   = trackIter->getMomentum().perp();
 	float tmp_trk_eta  = trackIter->getMomentum().eta();
@@ -266,6 +271,9 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  v_trk_z0.push_back(tmp_trk_z0);
 	  v_trk_pt.push_back(tmp_trk_pt);
 	  sumTrk_pt += tmp_trk_pt;
+	  
+	  edm::Ptr< L1TkTrackType > trkPtr( L1TkTrackHandle, itrk) ;
+	  L1TrackPtrs.push_back(trkPtr);
 	  
 	  h_start_trk->Fill(tmp_trk_z0);
 	}
@@ -372,10 +380,8 @@ void L1TkJetProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // ----------------------------------------------------------------------------------------------
 
       const math::XYZTLorentzVector jetP4 = jetIter->p4();
-      L1TkJetParticle trkJet(jetP4, jetRef, this_zpos);
+      L1TkJetParticle trkJet(jetP4, jetRef, L1TrackPtrs, this_zpos);
       
-      //cout << "jet vertez = " << this_zpos << endl;
-
       cenTkJets->push_back(trkJet);
 
 

@@ -280,13 +280,28 @@ L1TrackTriggerObjectsAnalyzer::analyze(const edm::Event& iEvent, const edm::Even
         float phi = jetIter -> phi();
         float eta = jetIter -> eta();
         int bx = jetIter -> bx() ;
-	float jetvtx = jetIter -> getJetVtx();
+	float jetvtx = jetIter -> getJetVtx();	// this is the z-vertex of the jet
         const edm::Ref< L1JetParticleCollection > Jetref = jetIter -> getJetRef();
         float et_L1Jet = Jetref -> et();
-	//L1JetParticle::JetType type = Jetref -> type();  // requires to keep the GCT collection
 
         std::cout << " a Jet candidate ET eta phi zvertex " << et << " " << eta << " " << phi << " " << jetvtx  << std::endl;
         std::cout << "                           Calo  ET " << et_L1Jet << " bx = " << bx << std::endl;
+
+	// retrieve the L1Tracks associated to the jet :
+	std::vector< edm::Ptr< L1TkTrackType > > theseTracks = jetIter -> getTrkPtrs();
+	std::cout << "    The tracks associated to the jet and within 2 cm of the jet z-vertex : " << std::endl;
+        for (int it=0; it<(int)theseTracks.size(); it++) {
+        	edm::Ptr< L1TkTrackType > thisTrk = theseTracks.at(it);
+                float tmp_trk_z0   = thisTrk->getVertex().z();
+		float dz = fabs( jetvtx - tmp_trk_z0 );
+		if (dz > 2. ) continue ;	// keep tracks within 2 cm of the jet vertex
+        	float tmp_trk_pt   = thisTrk->getMomentum().perp();
+        	float tmp_trk_eta  = thisTrk->getMomentum().eta();
+        	float tmp_trk_phi  = thisTrk->getMomentum().phi();
+        	float tmp_trk_chi2 = thisTrk->getChi2();
+        	std::cout << "     trk pt = " << tmp_trk_pt << " eta = " << tmp_trk_eta << " phi = " << tmp_trk_phi << " z0 = " << tmp_trk_z0 << " chi2 = " << tmp_trk_chi2 << std::endl;
+      	}
+
     }
  }
 

@@ -59,8 +59,10 @@ namespace
 
 	// for L1TrackTriggerObjects
     edm::Ptr<L1TkTrack_PixelDigi_ > P_T_PD_C;
-    std::vector< std::vector< edm::Ptr<L1TkTrack_PixelDigi_ > > > T_PD_C_C;
-    edm::Wrapper<std::vector< std::vector< edm::Ptr< L1TkTrack_PixelDigi_ > > > > T_PD_C_CW;
+    //std::vector< std::vector< edm::Ptr<L1TkTrack_PixelDigi_ > > > T_PD_C_C;
+    //edm::Wrapper<std::vector< std::vector< edm::Ptr< L1TkTrack_PixelDigi_ > > > > T_PD_C_CW;
+    std::vector< edm::Ptr<L1TkTrack_PixelDigi_ > >  T_PD_C_C;
+    edm::Wrapper< std::vector< edm::Ptr< L1TkTrack_PixelDigi_ > > > T_PD_C_CW;
 
 
 /*
