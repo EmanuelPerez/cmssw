@@ -7,7 +7,7 @@ L1TkStubElectrons = cms.EDProducer("L1TkElectronStubsProducer",
                                         # EGIsoTrk or IsoEGIsoTrk if only the EG or IsoEG
                                         # objects that pass a cut RelIso < RelIsoCut are written
                                         # into the new collection.
-        L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticles","EGamma"),      # input EGamma collection
+        L1EGammaInputTag = cms.InputTag("SLHCL1ExtraParticlesNewClustering","EGamma"),      # input EGamma collection
 					# When the standard sequences are used :
                                                 #   - for the Run-1 algo, use ("l1extraParticles","NonIsolated")
                                                 #     or ("l1extraParticles","Isolated")
@@ -21,9 +21,9 @@ L1TkStubElectrons = cms.EDProducer("L1TkElectronStubsProducer",
         L1StubInputTag  = cms.InputTag("L1TkStubsFromPixelDigis","StubsPass"),
         StubMinPt          = cms.double(5.0), # minimum Pt to select Stubs
         StubEGammaDeltaPhi = cms.double(0.05),     # delta Phi of stub and EG
-        StubEGammaDeltaZ   = cms.double(20.0),     # Z-intercept o
-        StubEGammaPhiMiss  = cms.double(0.0014),     # delta Phi between a stub-pair and EG  
-        StubEGammaZMiss    = cms.double(0.8),     # Z difference between a stub-pair and EG                    
+        StubEGammaDeltaZ   = cms.double(15.0),     # Z-intercept o
+        StubEGammaPhiMiss  = cms.double(0.0015),     # delta Phi between a stub-pair and EG  
+        StubEGammaZMiss    = cms.double(0.7),     # Z difference between a stub-pair and EG                    
         BeamSpotInputTag   = cms.InputTag("BeamSpotFromSim", "BeamSpot"), # beam spot InputTag                                            
         
         L1TrackInputTag = cms.InputTag("L1Tracks","Level1TkTracks"),
@@ -35,7 +35,7 @@ L1TkStubElectrons = cms.EDProducer("L1TkElectronStubsProducer",
 						# When RelativeIsolation = False, IsoCut is in GeV.
         # Determination of the isolation w.r.t. L1Tracks :
         PTMINTRA = cms.double( 2. ),	# in GeV
-	DRmin = cms.double( 0.08),
-	DRmax = cms.double( 0.5 ),
+	DRmin = cms.double( 0.05),
+	DRmax = cms.double( 0.4 ),
 	DeltaZ = cms.double( 0.4 )    # in cm. Used for tracks to be used isolation calculation
 )

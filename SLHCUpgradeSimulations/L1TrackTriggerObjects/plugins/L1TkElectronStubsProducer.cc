@@ -39,6 +39,8 @@
 // Matching Algorithm
 #include "SLHCUpgradeSimulations/L1TrackTriggerObjects/interface/L1TkElectronStubMatchAlgo.h"
 
+#include "DataFormats/Math/interface/deltaPhi.h"
+
 #include <string>
 #include "TMath.h"
 
@@ -70,6 +72,8 @@ class L1TkElectronStubsProducer : public edm::EDProducer {
       //virtual void endRun(edm::Run&, edm::EventSetup const&);
       //virtual void beginLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
       //virtual void endLuminosityBlock(edm::LuminosityBlock&, edm::EventSetup const&);
+
+      float isolation(const edm::Handle<L1TkTrackCollectionType> & trkHandle, GlobalPoint ep, std::vector<double> & zvals);
 
       // ----------member data ---------------------------
 	edm::InputTag L1EGammaInputTag;
@@ -169,20 +173,21 @@ L1TkElectronStubsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
     float et_ele = 0;
     if (cosh(eta_ele) > 0.0) et_ele = e_ele/cosh(eta_ele);
     else et_ele = -1.0;
-    if (fabs(eta_ele) > 2.5) continue;
     if (ETmin > 0.0 && et_ele <= ETmin) continue;
 
-    unsigned int matchedStubs = L1TkElectronStubMatchAlgo::doMatch(egIter, L1TkStubHandle, conf, iSetup, beamSpot); 
- 
+    std::vector<double> compatibleZpoints;
+    unsigned int matchedStubs = L1TkElectronStubMatchAlgo::doMatch(egIter, L1TkStubHandle, conf, iSetup, beamSpot,compatibleZpoints); 
+   
+
     if (matchedStubs > 0) {
 
       const math::XYZTLorentzVector P4 = egIter -> p4() ;
-
-      float trkisol = 0.0;
-      //	isolation(L1TkTrackHandle, itrack);
-      //      if (RelativeIsolation && et_ele > 0.0) {   // relative isolation
-      //	trkisol = trkisol  / et_ele;
-      //      }
+      GlobalPoint epos = L1TkElectronStubMatchAlgo::calorimeterPosition(egIter->phi(), egIter->eta(), egIter->energy()); 
+      float trkisol = isolation(L1TkTrackHandle, epos, compatibleZpoints);
+      //      std::cout <<  " Event # " <<  iEvent.id().event() << " EGamma Et " << et_ele  << " Selected Tracklets " << matchedStubs << " Isolation " << trkisol/et_ele << std::endl;
+      if (RelativeIsolation && et_ele > 0.0) {   // relative isolation
+	trkisol = trkisol  / et_ele;
+      }
       edm::Ptr< L1TkTrackType > L1TrackPtrNull; // null pointer
 
       L1TkElectronParticle trkEm( P4,
@@ -194,12 +199,11 @@ L1TkElectronStubsProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
 	// write the L1TkEm particle to the collection, 
 	// irrespective of its relative isolation
 	result -> push_back( trkEm );
-      }	
-      //else {
+      }	else {
 	// the object is written to the collection only
 	// if it passes the isolation cut
-      //	if (trkisol <= IsoCut) result -> push_back( trkEm );
-      //      }
+	if (trkisol <= IsoCut) result -> push_back( trkEm );
+      }
      
     }
    
@@ -262,6 +266,36 @@ L1TkElectronStubsProducer::fillDescriptions(edm::ConfigurationDescriptions& desc
   edm::ParameterSetDescription desc;
   desc.setUnknown();
   descriptions.addDefault(desc);
+}
+// method to calculate isolation
+float 
+  L1TkElectronStubsProducer::isolation(const edm::Handle<L1TkTrackCollectionType> & trkHandle, GlobalPoint ep, std::vector<double> & zvals) {
+  L1TkTrackCollectionType::const_iterator trackIter;
+  
+  float er = ep.perp();
+  float ez = ep.z();
+  float minIso = 999.9;
+  
+  for (std::vector<double>::iterator iz = zvals.begin(); iz != zvals.end(); iz++) {
+    float zcorr = ez - (*iz);
+    float theta = 0.0;
+    if (zcorr >= 0) theta = atan(er/fabs(zcorr));
+    else theta = 3.14 - atan(er/fabs(zcorr));
+    float etacorr = -1.0 * TMath::Log(TMath::Tan(theta/2.0));
+    
+    float sumPt = 0.0;
+    for (trackIter = trkHandle->begin(); trackIter != trkHandle->end(); ++trackIter) {
+      float dZ = fabs(trackIter->getVertex().z() - (*iz));       
+      float dPhi = reco::deltaPhi(trackIter->getMomentum().phi(), ep.phi());
+      float dEta = (trackIter->getMomentum().eta() - etacorr);
+      float dR =  sqrt(dPhi*dPhi + dEta*dEta);
+      if (dR > DRmin && dR < DRmax && dZ < DeltaZ && trackIter->getMomentum().perp() > PTMINTRA) {
+	sumPt += trackIter->getMomentum().perp();
+      }
+    }
+    if (sumPt < minIso) minIso = sumPt;
+  }
+  return minIso;
 }
 
 //define this as a plug-in

@@ -35,7 +35,7 @@ namespace L1TkElectronStubMatchAlgo {
   double radii[7] = {0.0, 23.0, 35.7, 50.8, 68.6, 88.8, 108.0};
   // ------------ match EGamma and Track
   unsigned int doMatch(l1extra::L1EmParticleCollection::const_iterator egIter, edm::Handle< L1TkStub_PixelDigi_Collection > stubHandle,
-		       const edm::ParameterSet& conf, const edm::EventSetup& setup, GlobalPoint bspot) {
+		       const edm::ParameterSet& conf, const edm::EventSetup& setup, GlobalPoint bspot, std::vector<double>& zvals) {
     
     double ptMinCutoff = conf.getParameter<double>("StubMinPt");
     double dPhiCutoff  = conf.getParameter<double>("StubEGammaDeltaPhi");
@@ -43,8 +43,6 @@ namespace L1TkElectronStubMatchAlgo {
     double phiMissCutoff = conf.getParameter<double>("StubEGammaPhiMiss");
     double zMissCutoff   = conf.getParameter<double>("StubEGammaZMiss");
    
-    
-    
     GlobalPoint egPos = L1TkElectronStubMatchAlgo::calorimeterPosition(egIter->phi(), egIter->eta(), egIter->energy());
     
     // Magnetic Field
@@ -59,7 +57,6 @@ namespace L1TkElectronStubMatchAlgo {
     std::vector<L1TkStubIter> selectedStubs;
     for (L1TkStubIter stubIter = stubHandle->begin(); stubIter != stubHandle->end(); ++stubIter) {
       float stub_pt = stackedGeometryHandle->findRoughPt(magnetStrength,&(*stubIter));
-      if (ptMinCutoff > 0.0 && stub_pt <= ptMinCutoff) continue;
       unsigned int ilayer = getLayerId(stubIter);
       if ((ilayer%10) > 3) continue;
       
@@ -72,13 +69,19 @@ namespace L1TkElectronStubMatchAlgo {
       double zIntercept = getZIntercept(egPos, r, z);
       double scaledZInterceptCut;
       double scaledDPhiCut;
-      if (ilayer < 10) {
+      double scaledPtMinCut;
+      if (fabs(egIter->eta()) < 1.1) {
+	//      if (ilayer < 10) {
 	scaledZInterceptCut = getScaledZInterceptCut(ilayer,dZCutoff, 0.75, egPos.eta());
         scaledDPhiCut = dPhiCutoff;
+        scaledPtMinCut = ptMinCutoff;
       }	else {
         scaledDPhiCut = 1.6* dPhiCutoff;
         scaledZInterceptCut = dZCutoff;
+        scaledPtMinCut = ptMinCutoff*1.0;
       }    
+      if (scaledPtMinCut > 0.0 && stub_pt <= scaledPtMinCut) continue;
+
       if ( (fabs(dPhi) < scaledDPhiCut) && 
 	   (fabs(zIntercept)< scaledZInterceptCut) ) selectedStubs.push_back(stubIter);
     }
@@ -89,6 +92,10 @@ namespace L1TkElectronStubMatchAlgo {
       for (std::vector<L1TkStubIter>::const_iterator istub2 = istub1+1; istub2 != selectedStubs.end(); istub2++) {
         unsigned layer1 = getLayerId(*istub1);   
         unsigned layer2 = getLayerId(*istub2);   
+	if (!selectLayers(egPos.eta(),layer1,layer2)) continue;
+        bool barrel = true; 
+        if (layer2 > 10) barrel = false;   
+
         double innerZ = stackedGeometryHandle->findGlobalPosition(&(*(*istub1))).z();
 	double outerZ = stackedGeometryHandle->findGlobalPosition(&(*(*istub2))).z();
         double innerR = stackedGeometryHandle->findGlobalPosition(&(*(*istub1))).perp();
@@ -104,10 +111,7 @@ namespace L1TkElectronStubMatchAlgo {
 			  stackedGeometryHandle->findGlobalPosition(&(*(*istub2))).y()-bspot.y(),
 			  stackedGeometryHandle->findGlobalPosition(&(*(*istub2))).z()-bspot.z());
 	
-	if ( ((layer1%10) > 3) || ((layer2%10) > 3) ) continue;
-        if ((layer2%10) < (layer1%10) || layer2 == layer1) continue;
-        bool barrel = true; 
-        if (layer2 > 10) barrel = false;   
+
 	if(!goodTwoPointPhi(innerR, outerR, innerPhi, outerPhi, magnetStrength)) continue;
 	if(!goodTwoPointZ(innerR, outerR, innerZ, outerZ)) continue;
         
@@ -115,7 +119,7 @@ namespace L1TkElectronStubMatchAlgo {
 	double phiMiss = getPhiMiss(egIter->et(), s1pos, s2pos);
 	
         double phiMissScaledCut = phiMissCutoff;
-	if (fabs(egPos.eta()) > 1.1) {
+	if (fabs(egPos.eta()) >= 1.1) {
 	  if (layer1 <= 3 && layer2 <= 3) phiMissScaledCut *= 1.4;
 	  else phiMissScaledCut *= 1.8;
 	}
@@ -127,6 +131,7 @@ namespace L1TkElectronStubMatchAlgo {
 	}
 	if(fabs(phiMiss)< phiMissScaledCut && fabs(zMiss) < zMissScaledCut) {
           ncount++;
+          zvals.push_back(getCompatibleZPoint(innerR, outerR, innerZ, outerZ));
 	}
       }
     }
@@ -217,11 +222,11 @@ namespace L1TkElectronStubMatchAlgo {
   }
   // Delta Phi
   double getDPhi(GlobalPoint epos, double eet, double r, double phi, double m_strength) {
-  
+    
     double er = epos.perp();
-
+    
     double phiVsRSlope = -3.00e-3 * m_strength / eet / 2.;
-  
+    
     // preselecton variable
     double psi = reco::deltaPhi(phi,epos.phi());
     double deltaPsi = psi - (er-r)*phiVsRSlope;
@@ -290,11 +295,10 @@ namespace L1TkElectronStubMatchAlgo {
     double mult  = (rcal-radii[layer])/(rcal-radii[1]);
     return (mult*(cut+cfac*(1.0/(1.0-cos(2*atan(exp(-1.0*fabs(eta)))))))); 
   }
-
+  // Z-issCut
   double getScaledZMissCut(int layer1, int layer2, double cut, double cfac, double eta) {
-    double scaled_cut;
-    double mult =   ( (radii[layer2] - radii[layer1])/(rcal-radii[layer1]) )*( (rcal -radii[1])/(radii[2]-radii[1]));
-    return scaled_cut = (mult*(cut+cfac*(1.0/(1.0-cos(2*atan(exp(-1.0*fabs(eta))))))));
+    double mult = ( (radii[layer2] - radii[layer1])/(rcal-radii[layer1]) )*( (rcal -radii[1])/(radii[2]-radii[1]));
+    return  (mult*(cut+cfac*(1.0/(1.0-cos(2*atan(exp(-1.0*fabs(eta))))))));
   }
   bool compareStubLayer( L1TkStubIter s1, L1TkStubIter s2) {
     unsigned int l1 = 0;
@@ -310,5 +314,32 @@ namespace L1TkElectronStubMatchAlgo {
       l2 = StackedTrackerDetId(s2->getDetId()).iSide() * 10 + StackedTrackerDetId(s2->getDetId()).iDisk();
     }
     return l1 < l2;
+  }
+
+  bool selectLayers(float eta, int l1, int l2) {
+    bool select = false;
+    if ((fabs(eta) < 1.3) && !(l1 < 4 && l2 < 4)) return select;
+    if ((fabs(eta) >= 1.3 && TMath::Abs(eta) < 1.7) && !(
+							 (l1 == 1 && l2 == 2)  ||
+							 (l1 == 1 && l2 == 11) ||
+							 (l1 == 1 && l2 == 21) ||
+							 (l1 == 2 && l2 == 11) ||
+							 (l1 == 2 && l2 == 21) ||
+							 (l1 == 11 && l2 == 12)||
+							 (l1 == 21 && l2 == 22)))  return select;
+    if ((fabs(eta) >= 1.7 && TMath::Abs(eta) <= 2.3) && !(
+							  (l1 == 1 && l2 == 11) ||
+							  (l1 == 1 && l2 == 12) ||
+							  (l1 == 1 && l2 == 21) ||
+							  (l1 == 1 && l2 == 22) ||
+							  (l1 == 11 && l2 == 12) ||
+							  (l1 == 21 && l2 == 22) ||
+							  (l1 == 12 && l2 == 13) ||
+							  (l1 == 22 && l2 == 23))) return select;
+    select = true;
+    return select;
+  }
+  double getCompatibleZPoint(double r1, double r2, double z1, double z2) {
+    return (z1 - r1*(z2-z1)/(r2-r1));
   }
 }

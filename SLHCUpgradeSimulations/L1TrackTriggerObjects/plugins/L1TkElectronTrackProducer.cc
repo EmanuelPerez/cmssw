@@ -190,7 +190,6 @@ L1TkElectronTrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iS
     float et_ele = 0;
     if (cosh(eta_ele) > 0.0) et_ele = e_ele/cosh(eta_ele);
     else et_ele = -1.0;
-    if (fabs(eta_ele) > 2.5) continue;
     if (ETmin > 0.0 && et_ele <= ETmin) continue;
     // match the L1EG object with a L1Track
     float drmin = 999;
@@ -301,23 +300,23 @@ L1TkElectronTrackProducer::isolation(const edm::Handle<L1TkTrackCollectionType> 
   edm::Ptr< L1TkTrackType > matchedTrkPtr (trkHandle, match_index) ; 
   L1TkTrackCollectionType::const_iterator trackIter;
 
+  float sumPt = 0.0;
+  int itr = 0;
+  for (trackIter = trkHandle->begin(); trackIter != trkHandle->end(); ++trackIter) {
+    if (itr != match_index) {
+      float dZ = fabs(trackIter->getVertex().z() - matchedTrkPtr->getVertex().z());
+    
+      float dPhi = reco::deltaPhi(trackIter->getMomentum().phi(), matchedTrkPtr->getMomentum().phi());
+      float dEta = (trackIter->getMomentum().eta() - matchedTrkPtr->getMomentum().eta());
+      float dR =  sqrt(dPhi*dPhi + dEta*dEta);
 
- float sumPt = 0.0;
- int itr = 0;
- for (trackIter = trkHandle->begin(); trackIter != trkHandle->end(); ++trackIter) {
-
-   float dZ = fabs(trackIter->getVertex().z() - matchedTrkPtr->getVertex().z());
-
-   float dPhi = reco::deltaPhi(trackIter->getMomentum().phi(), matchedTrkPtr->getMomentum().phi());
-   float dEta = (trackIter->getMomentum().eta() - matchedTrkPtr->getMomentum().eta());
-   float dR =  sqrt(dPhi*dPhi + dEta*dEta);
-
-   if (dR > DRmin && dR < DRmax && dZ < DeltaZ && trackIter->getMomentum().perp() > PTMINTRA && itr != match_index) sumPt += trackIter->getMomentum().perp();
-
-   itr++;
- }
- return sumPt;
-
+      if (dR > DRmin && dR < DRmax && dZ < DeltaZ && trackIter->getMomentum().perp() > PTMINTRA) {
+	sumPt += trackIter->getMomentum().perp();
+      }
+    }
+    itr++;
+  }
+  return sumPt;
 }
 
 //define this as a plug-in

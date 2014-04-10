@@ -14,7 +14,7 @@
 namespace L1TkElectronStubMatchAlgo {
   typedef L1TkStub_PixelDigi_Collection::const_iterator L1TkStubIter;
   unsigned int doMatch(l1extra::L1EmParticleCollection::const_iterator egIter, edm::Handle< L1TkStub_PixelDigi_Collection > stubHandle,
-		       const edm::ParameterSet& conf, const edm::EventSetup& iSetup, GlobalPoint bspot);
+		       const edm::ParameterSet& conf, const edm::EventSetup& iSetup, GlobalPoint bspot, std::vector<double>& zvals);
   GlobalPoint calorimeterPosition(double phi, double eta, double e);
   unsigned int getLayerId(const L1TkStubIter& aStub);
   bool goodTwoPointZ(double innerR, double outerR, double innerZ, double outerZ );
@@ -26,5 +26,7 @@ namespace L1TkElectronStubMatchAlgo {
   double getScaledZInterceptCut(unsigned int layer, double cut, double cfac, double eta);
   double getScaledZMissCut(int layer1, int layer2, double cut, double cfac, double eta);
   bool compareStubLayer( L1TkStubIter s1, L1TkStubIter s2);
+  bool selectLayers(float eta, int l1, int l2); 
+  double getCompatibleZPoint(double r1, double r2, double z1, double z2);
 }
 #endif
