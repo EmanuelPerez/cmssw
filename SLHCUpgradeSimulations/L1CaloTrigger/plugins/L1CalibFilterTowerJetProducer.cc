@@ -135,6 +135,9 @@ conf_(iConfig)
 
     // Extract jet pT threshold for Ht, mHt calculation
     energySumsJetPtThreshold   = iConfig.getParameter<double> ("EnergySumsJetPtThreshold");
+
+    // Minimum PT for calibration. Remove jets which cannot be calibrated
+    pTCalibrationThreshold     = iConfig.getParameter<double> ("pTCalibrationThreshold");
    
 
 }
@@ -296,12 +299,12 @@ L1CalibFilterTowerJetProducer::calibrateJetCollection( edm::Handle<L1TowerJetCol
        // Jet pT threshold for calibration, only calibrate above threshold
        if ( uncalibJet.p4().pt() < pTCalibrationThreshold ){
 
-	 // Store un-calibrated L1Jet 
+	 // Uncomment to Store un-calibrated L1Jet 
 	 // ------------------------------------------------------------                                                                                        
 	 // Create un-sorted calibrated L1Jet 
-	 math::PtEtaPhiMLorentzVector tempJet;
-	 tempJet.SetCoordinates( uncalibJet.p4().pt(), uncalibJet.p4().eta(), uncalibJet.p4().phi(), uncalibJet.p4().M() );
-	 unsortedCalibratedL1Jets.push_back( l1extra::L1JetParticle( tempJet, l1extra::L1JetParticle::JetType::kCentral, 0 ) );
+	 //math::PtEtaPhiMLorentzVector tempJet;
+	 //tempJet.SetCoordinates( uncalibJet.p4().pt(), uncalibJet.p4().eta(), uncalibJet.p4().phi(), uncalibJet.p4().M() );
+	 //unsortedCalibratedL1Jets.push_back( l1extra::L1JetParticle( tempJet, l1extra::L1JetParticle::JetType::kCentral, 0 ) );
 
 	 continue;
        }
@@ -351,11 +354,11 @@ L1CalibFilterTowerJetProducer::calibrateJetCollection( edm::Handle<L1TowerJetCol
        
        // Calculate the corrected Pt 
        double correction    = (p0 + term1 + term2);
-       double invCorrection = 1/correction;
+       //double invCorrection = 1/correction;
        
        // Use invereted correction for Phase 2
-       correctedPt    = invCorrection*unCorrectedPt;
-       //	 correctedPt    = correction*unCorrectedPt;
+       //correctedPt    = invCorrection*unCorrectedPt;
+       	 correctedPt    = correction*unCorrectedPt;
 
        
 

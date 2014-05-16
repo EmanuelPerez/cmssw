@@ -19,7 +19,7 @@ gPrePUSJets = "L1TowerJetCentralityFilter"
 
 
 
-gJetDiameter = cms.uint32(11)
+gJetDiameter = cms.uint32(9) # default to 9x9 ~ deltaR 0.4 Jets
 
 
 #====================================================================================================
@@ -246,10 +246,10 @@ L1CalibFilterTowerJetProducer = cms.EDProducer("L1CalibFilterTowerJetProducer",
  # ------------------------------
  
  # Input uncalibrated jet collection
- UncalibratedTowerJets = cms.InputTag("L1TowerJetPUSubtractedProducer","PrePUSubCenJets"),
+ UncalibratedTowerJets = cms.InputTag("L1TowerJetPUSubtractedProducer","LocalPUSubCenJets"),
  
  # L1 pT calibration threshold, minimum L1 jet pT (GeV) to apply correction
- pTCalibrationThreshold = cms.double( 0 ),
+ pTCalibrationThreshold = cms.double( 10 ),
  
  
  # Calibration eta-binning
