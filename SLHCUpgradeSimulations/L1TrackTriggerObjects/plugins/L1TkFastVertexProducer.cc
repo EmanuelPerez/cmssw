@@ -143,9 +143,9 @@ L1TkFastVertexProducer::L1TkFastVertexProducer(const edm::ParameterSet& iConfig)
   nStubsPSmin = iConfig.getParameter<int>("nStubsPSmin");
 
 
- int nbins = 300;
- float xmin = -15;
- float xmax = +15;
+ int nbins = 600;
+ float xmin = -30 + 0.05/2.;
+ float xmax = +30 + 0.05/2.;
 
   htmp = new TH1F("htmp",";z (cm); Tracks",nbins,xmin,xmax);
   htmp_weight = new TH1F("htmp_weight",";z (cm); Tracks",nbins,xmin,xmax);
