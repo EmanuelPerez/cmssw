@@ -3,8 +3,7 @@
 //     and Emmanuele    //
 //    july 2012 @ CU    //
 //////////////////////////
-
-
+  
 #ifndef L1TTRACK_PRDC_H
 #define L1TTRACK_PRDC_H
 
@@ -211,7 +210,7 @@ void L1TrackProducer::endRun(edm::Run& run, const edm::EventSetup& iSetup)
 void L1TrackProducer::beginRun(edm::Run& run, const edm::EventSetup& iSetup )
 {
   eventnum=0;
-  std::cout << "L1TrackProducer" << std::endl;
+  //std::cout << "L1TrackProducer" << std::endl;
 }
 
 //////////
@@ -223,7 +222,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   /// Prepare output
   //std::auto_ptr< L1TrackCollectionType > L1TracksForOutput( new L1TrackCollectionType );
-  std::auto_ptr< L1TkStubPtrCollVectorType > L1TkStubsForOutput( new L1TkStubPtrCollVectorType );
+  //std::auto_ptr< L1TkStubPtrCollVectorType > L1TkStubsForOutput( new L1TkStubPtrCollVectorType );
   //std::auto_ptr< L1TkTrackletCollectionType > L1TkTrackletsForOutput( new L1TkTrackletCollectionType );
   std::auto_ptr< L1TkTrackCollectionType > L1TkTracksForOutput( new L1TkTrackCollectionType );
 
@@ -256,18 +255,18 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("BeamSpotFromSim","BeamSpot",recoBeamSpotHandle);
   math::XYZPoint bsPosition=recoBeamSpotHandle->position();
 
-  cout << "L1TrackProducer: B="<<mMagneticFieldStrength
-       <<" vx reco="<<bsPosition.x()
-       <<" vy reco="<<bsPosition.y()
-       <<" vz reco="<<bsPosition.z()
-       <<endl;
+  //cout << "L1TrackProducer: B="<<mMagneticFieldStrength
+  //     <<" vx reco="<<bsPosition.x()
+  //     <<" vy reco="<<bsPosition.y()
+  //     <<" vz reco="<<bsPosition.z()
+  //     <<endl;
 
   SLHCEvent ev;
   ev.setIPx(bsPosition.x());
   ev.setIPy(bsPosition.y());
   eventnum++;
 
-  cout << "Get simtracks"<<endl;
+  //cout << "Get simtracks"<<endl;
 
   ///////////////////
   // GET SIMTRACKS //
@@ -283,7 +282,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<reco::GenParticleCollection> genpHandle;
   iEvent.getByLabel( "genParticles", genpHandle );
 
-  cout << "Get pixel digis"<<endl;
+  //cout << "Get pixel digis"<<endl;
 
   /////////////////////
   // GET PIXEL DIGIS //
@@ -292,7 +291,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("simSiPixelDigis", pixelDigiHandle);
   iEvent.getByLabel("simSiPixelDigis", pixelDigiSimLinkHandle);
 
-  cout << "Get stubs and clusters"<<endl;
+  //cout << "Get stubs and clusters"<<endl;
 
   ////////////////////////
   // GET THE PRIMITIVES //
@@ -301,7 +300,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("L1TkClustersFromPixelDigis", pixelDigiL1TkClusterHandle);
   iEvent.getByLabel("L1TkStubsFromPixelDigis", "StubsPass", pixelDigiL1TkStubHandle);
 
-  cout << "Will loop over simtracks" <<endl;
+  //cout << "Will loop over simtracks" <<endl;
 
   ////////////////////////
   /// LOOP OVER SimTracks
@@ -331,7 +330,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   } /// End of Loop over SimTracks
 
 
-  std::cout << "Will loop over digis:"<<std::endl;
+  //std::cout << "Will loop over digis:"<<std::endl;
 
   DetSetVector<PixelDigi>::const_iterator iterDet;
   for ( iterDet = pixelDigiHandle->begin();
@@ -394,7 +393,10 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 		iterSimLink++) {
 	        
 	    /// When the channel is the same, the link is found
-	    if ( (int)iterSimLink->channel() == iterDigi->channel() ) {
+	    if ( (int)iterSimLink->channel() == iterDigi->channel() &&
+		 iterSimLink->eventId().event()==0 &&
+		 iterSimLink->eventId().bunchCrossing()==0
+		 ) {
 	            
 	      /// Map wrt SimTrack Id
 	      unsigned int simTrackId = iterSimLink->SimTrackId();
@@ -402,7 +404,7 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	    }
 	  }
 	ev.addDigi(offset+disk,iterDigi->row(),iterDigi->column(),
-		   pxfId.blade(),pxfId.panel(),pxfId.module(),
+		   9999999,pxfId.panel(),pxfId.module(),
 		   pdPos.x(),pdPos.y(),pdPos.z(),simtrackids);
 	}
       }
@@ -450,7 +452,10 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	      iterSimLink++) {
 	    
 	  /// When the channel is the same, the link is found
-	  if ( (int)iterSimLink->channel() == iterDigi->channel() ) {
+	  if ( (int)iterSimLink->channel() == iterDigi->channel() && 
+	       iterSimLink->eventId().event()==0 &&
+	       iterSimLink->eventId().bunchCrossing()==0
+	       ) {
 	        
 	    /// Map wrt SimTrack Id
 	    unsigned int simTrackId = iterSimLink->SimTrackId();
@@ -465,13 +470,20 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   }    
 
 
-  cout << "Will loop over stubs" << endl;
+  //cout << "Will loop over stubs" << endl;
+
+  stubMapType stubMap;
+  int iter=0;
+
+  int stubcounter=0;
 
   /// Loop over L1TkStubs
   L1TkStub_PixelDigi_Collection::const_iterator iterL1TkStub;
   for ( iterL1TkStub = pixelDigiL1TkStubHandle->begin();
 	iterL1TkStub != pixelDigiL1TkStubHandle->end();
 	++iterL1TkStub ) {
+
+    stubcounter++;
 
     double stubPt = theStackedGeometry->findRoughPt(mMagneticFieldStrength,&(*iterL1TkStub));
         
@@ -546,14 +558,30 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }    
     }    
 
-    ev.addStub(iStack-1,iPhi,iZ,stubPt,
-	       stubPosition.x(),stubPosition.y(),stubPosition.z(),
-	       innerStack,irphi,iz,iladder,imodule);
+    if  (ev.addStub(iStack-1,iPhi,iZ,stubPt,
+		    stubPosition.x(),stubPosition.y(),stubPosition.z(),
+		    innerStack,irphi,iz,iladder,imodule)) {
+      Stub *aStub = new Stub;
+      *aStub = ev.stub(iter);
+      iter++;
+      
+      //int theSimtrackId=ev.simtrackid(*aStub);                                  
+      int theSimtrackId=-1;
+
+      L1TStub L1Stub(theSimtrackId, aStub->iphi(), aStub->iz(),
+		     aStub->layer()+1, aStub->ladder()+1, aStub->module(),
+		     aStub->x(), aStub->y(), aStub->z(),0.0,0.0,aStub->pt());
+      delete aStub;
+
+      stubMap.insert( make_pair(L1Stub, L1TkStubPtrType(pixelDigiL1TkStubHandle,
+							iterL1TkStub-pixelDigiL1TkStubHandle->begin()) ) );
+    }
         
   }
 
+  //cout << "L1TrackProducer: "<<stubcounter<<endl;
 
-  std::cout << "Will actually do L1 tracking:"<<std::endl;
+  //std::cout << "Will actually do L1 tracking:"<<std::endl;
 
 
   //////////////////////////
@@ -565,17 +593,18 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // mode means:
   // 1 LB_6PS
   // 2 LB_4PS_2SS
-  // 3 EB
+  // 3 BE
+  // 4 BE5D
 
   //cout << "geometry:"<<geometry_<<endl;
 
   if (geometry_=="LB_6PS") mode=1;
   if (geometry_=="LB_4PS_2SS") mode=2;
   if (geometry_=="BE") mode=3;
+  if (geometry_=="BE5D") mode=4;
 
 
-
-  assert(mode==1||mode==2||mode==3);
+  assert(mode==1||mode==2||mode==3||mode==4);
 
 #include "L1Tracking.icc"  
 
@@ -584,63 +613,49 @@ void L1TrackProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   for (unsigned itrack=0; itrack<purgedTracks.size(); itrack++) {
     L1TTrack track=purgedTracks.get(itrack);
 
+    vector<L1TkStubPtrType> TkStubs;
+    vector<L1TStub> stubs = track.getStubs();
+
+    stubMapType::iterator it;
+    //cout << "stubmap size="<<stubMap.size()<<" "<<stubs.size()<<endl;
+    for (it = stubMap.begin(); it != stubMap.end(); it++) {
+      for (int j=0; j<(int)stubs.size(); j++) {
+       	if (it->first == stubs[j]) {
+	  //cout << "Found stub match"<<endl;
+	  TkStubs.push_back(it->second);
+	}
+      }
+    }
+
+
     //L1TkTrackType TkTrack(TkStubs, aSeedTracklet);
-    L1TkTrackType TkTrack;
-    //double frac;
-    //TkTrack.setSimTrackId(track.simtrackid(frac));  FIXME
-    //TkTrack.setRadius(1./track.rinv());  FIXME
-    //GlobalPoint bsPosition(recoBeamSpotHandle->position().x(),
-    //			   recoBeamSpotHandle->position().y(),
-    //			   track.z0()
-    //			   ); //store the L1 track vertex position 
-    GlobalPoint bsPosition(0.0,
-			   0.0,
-			   track.z0()
-			   ); //store the L1 track vertex position 
-    //TkTrack.setVertex(bsPosition);  FIXME
-    //TkTrack.setChi2RPhi(track.chisq1()); FIXME
-    //TkTrack.setChi2ZPhi(track.chisq2()); FIXME
-    //cout << "L1TrackProducer Track with pt="<<track.pt(mMagneticFieldStrength)<<endl;
+    L1TkTrackType TkTrack(TkStubs);
+    double frac;
+    TkTrack.setSimTrackId(track.simtrackid(frac)); 
+    GlobalPoint bsPosition(0.0,0.0,track.z0()); //store the L1 track vertex position 
+    TkTrack.setVertex(bsPosition);  
+    TkTrack.setChi2(track.chisq());
+    //short int charge=1;
+    //if (track.pt(mMagneticFieldStrength)<0.0) charge=-1;
+    //TkTrack.setCharge(charge);
+    TkTrack.setRInv(track.rinv());
+
+    // set simtrack ID (??) **this doesn't work, re-introduced get/set simtrack ID methods**
+    //if (iEvent.isRealData() == false) TkTrack.checkSimTrack();
+
     TkTrack.setMomentum( GlobalVector ( GlobalVector::Cylindrical(fabs(track.pt(mMagneticFieldStrength)), 
 								  track.phi0(), 
 								  fabs(track.pt(mMagneticFieldStrength))*sinh(track.eta())) ) );
 
     L1TkTracksForOutput->push_back(TkTrack);
 
-    vector<L1TkStubPtrType> TkStubs;
-    L1TTracklet tracklet = track.getSeed();
-    vector<L1TStub> stubComponents;// = tracklet.getStubComponents();
-    vector<L1TStub> stubs = track.getStubs();
-    //L1TkTrackletType TkTracklet;
+    //L1TTracklet tracklet = track.getSeed();
+    //vector<L1TStub> stubComponents;
 
-    stubMapType::iterator it;
-    //for (it = stubMap.begin(); it != stubMap.end(); it++) {
-      //if (it->first == stubComponents[0] || it->first == stubComponents[1]) {
-      //L1TkStubPtrType TkStub = it->second;
-	//if (TkStub->getStack()%2 == 0)
-	//  TkTracklet.addStub(0, TkStub);
-	//else
-	//  TkTracklet.addStub(1, TkStub);
-      //}
-      
-      //for (int j=0; j<(int)stubs.size(); j++) {
-    //	if (it->first == stubs[j])
-    //  TkStubs.push_back(it->second);
-    //}
-    //}
 
-    L1TkStubsForOutput->push_back( TkStubs );
-    //TkTracklet.checkSimTrack();
-    //TkTracklet.fitTracklet(mMagneticFieldStrength, GlobalPoint(bsPosition.x(), bsPosition.y(), 0.0), true);
-    //L1TkTrackletsForOutput->push_back( TkTracklet );
   }
 
 
-
-  // }
-
-  iEvent.put( L1TkStubsForOutput, "L1TkStubs");
-  //iEvent.put( L1TkTrackletsForOutput, "L1TkTracklets" );
   iEvent.put( L1TkTracksForOutput, "Level1TkTracks");
 
 } /// End of produce()

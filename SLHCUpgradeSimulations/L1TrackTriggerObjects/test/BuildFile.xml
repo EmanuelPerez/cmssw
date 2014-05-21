@@ -1,0 +1,19 @@
+<environment>
+  <library   file="*.cc" name="SLHCUpgradeSimulationsL1TrackTriggerObjectsTests">
+    <flags   EDM_PLUGIN="1"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/L1Trigger"/>
+<use name="DataFormats/L1TrackTrigger"/>
+<use name="SimDataFormats/SLHC"/>
+  <use   name="SimGeneral/HepPDTRecord"/>
+  <use   name="SimDataFormats/GeneratorProducts"/>
+  <use   name="PhysicsTools/UtilAlgos"/>
+  <use   name="CommonTools/UtilAlgos"/>
+  <use   name="hepmc"/>
+  <use   name="root"/>
+    <flags   CXXFLAGS="-g -O0"/>
+  </library>
+</environment>
+

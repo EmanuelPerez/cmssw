@@ -1,0 +1,23 @@
+#!/bin/sh
+
+curr_dir=`pwd`
+
+ANAL_DIR=/afs/cern.ch/user/e/eperez/work/L1TrackTrigger/612_SLHC6_Nov12/CMSSW_6_1_2_SLHC6_patch1/src/SLHCUpgradeSimulations/L1TrackTriggerObjects/test/PROD
+
+cd $ANAL_DIR
+eval `scram runtime -sh`
+cd $curr_dir
+LOG_DIR=$ANAL_DIR/log
+
+
+cp $ANAL_DIR/HTauTau_80_cfg.py go.py
+
+cmsRun go.py > llog
+
+ROOT_FILE=HTauTau_BE5D_80.root
+
+cmsStageOut  FileOut.root /store/cmst3/user/eperez/L1TrackTrigger/612_SLHC6/muDST/HTauTau/BE5D/zmatchingOff/$ROOT_FILE
+#cmsStageOut  FileOut.root /store/cmst3/user/eperez/L1TrackTrigger/612_SLHC6/muDST/HTauTau/BE5D/zmatchingOn/$ROOT_FILE
+
+cp llog $LOG_DIR/HTauTau_80.log
+

@@ -1,0 +1,4 @@
+<use name="SLHCUpgradeSimulations/L1TrackTriggerObjects"/>
+<library file="*.cc" name="L1TrackTriggerObjectsPlugin">
+  <flags EDM_PLUGIN="1"/>
+</library>

@@ -57,6 +57,13 @@ namespace
     std::vector< std::vector< edm::Ptr<L1TkStub_PixelDigi_ > > > S_PD_C_C;
     edm::Wrapper<std::vector< std::vector< edm::Ptr< L1TkStub_PixelDigi_ > > > > S_PD_C_CW;
 
+	// for L1TrackTriggerObjects
+    edm::Ptr<L1TkTrack_PixelDigi_ > P_T_PD_C;
+    //std::vector< std::vector< edm::Ptr<L1TkTrack_PixelDigi_ > > > T_PD_C_C;
+    //edm::Wrapper<std::vector< std::vector< edm::Ptr< L1TkTrack_PixelDigi_ > > > > T_PD_C_CW;
+    std::vector< edm::Ptr<L1TkTrack_PixelDigi_ > >  T_PD_C_C;
+    edm::Wrapper< std::vector< edm::Ptr< L1TkTrack_PixelDigi_ > > > T_PD_C_CW;
+
 
 /*
     // Anders tracks
@@ -169,6 +176,8 @@ namespace {
 #include "SimDataFormats/SLHC/interface/L1CaloTowerFwd.h"
 #include "SimDataFormats/SLHC/interface/L1CaloCluster.h"
 #include "SimDataFormats/SLHC/interface/L1CaloClusterFwd.h"
+#include "SimDataFormats/SLHC/interface/L1CaloClusterWithSeed.h"
+#include "SimDataFormats/SLHC/interface/L1CaloClusterWithSeedFwd.h"
 #include "SimDataFormats/SLHC/interface/L1CaloJet.h"
 #include "SimDataFormats/SLHC/interface/L1CaloJetFwd.h"
 #include "SimDataFormats/SLHC/interface/L1CaloRegion.h"
@@ -176,6 +185,7 @@ namespace {
 
 #include "SimDataFormats/SLHC/interface/L1TowerJet.h"
 #include "SimDataFormats/SLHC/interface/L1TowerJetFwd.h"
+#include "SimDataFormats/SLHC/interface/L1EGCrystalCluster.h"
 
 #include "SimDataFormats/SLHC/interface/EtaPhiContainer.h"
 
@@ -196,6 +206,11 @@ namespace {
     l1slhc::L1CaloClusterCollection                   l1caloclcoll;
     edm::Wrapper< l1slhc::L1CaloClusterCollection >   wl1calocl;
 
+    l1slhc::L1CaloClusterWithSeed                 calocls;
+    std::vector<l1slhc::L1CaloClusterWithSeed>    l1calocls;
+	l1slhc::L1CaloClusterWithSeedCollection		  l1caloclscoll;
+    edm::Wrapper< l1slhc::L1CaloClusterWithSeedCollection >   wl1calocls;
+
     l1slhc::L1CaloJet                             calojet;
     std::vector<l1slhc::L1CaloJet>                l1calojetvec;
     l1slhc::L1CaloJetCollection                   l1calojetcoll;
@@ -215,6 +230,10 @@ namespace {
     l1slhc::L1TowerJetCollection                   l1towerjetcoll;
     edm::Wrapper< l1slhc::L1TowerJetCollection >   wl1towerjetcol;
 
+    l1slhc::L1EGCrystalCluster                       egcrystalcluster;
+    std::vector<l1slhc::L1EGCrystalCluster>         l1egcrystalclustervec;
+    l1slhc::L1EGCrystalClusterCollection            l1egcrystalclustercoll;
+    edm::Wrapper<l1slhc::L1EGCrystalClusterCollection>   wl1egcrystalclustercoll;
   }
 }
 

@@ -1,0 +1,73 @@
+<lcgdict>
+
+ <class name="L1TrackPrimaryVertex" ClassVersion="12">
+  <version ClassVersion="12" checksum="1883304891"/>
+ </class>
+ <class name="std::vector<L1TrackPrimaryVertex>"/>
+ <class name="edm::Wrapper<std::vector<L1TrackPrimaryVertex> >"/>
+  <class name="edm::Ref<std::vector<L1TrackPrimaryVertex>,L1TrackPrimaryVertex,edm::refhelper::FindUsingAdvance<std::vector<L1TrackPrimaryVertex>,L1TrackPrimaryVertex> >"/>
+
+
+  <class name="l1extra::L1TkEtMissParticle" ClassVersion="15">
+   <version ClassVersion="15" checksum="2946574947"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkEtMissParticle>"/>
+ <class name="edm::Wrapper<l1extra::L1TkEtMissParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkEtMissParticle> >"/>
+
+  <class name="l1extra::L1TkEmParticle" ClassVersion="18">
+   <version ClassVersion="18" checksum="4061452071"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkEmParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkEmParticle> >"/>
+  <class name="edm::Ref<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle> >"/>
+<!--
+  <class name="edm::RefVector<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle> >"/>
+  <class name="std::vector<edm::Ref<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle> > >"/>
+  <class name="edm::reftobase::Holder<reco::Candidate, edm::Ref<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkEmParticle>,l1extra::L1TkEmParticle> > >" />
+-->
+
+  <class name="l1extra::L1TkElectronParticle" ClassVersion="15">
+   <version ClassVersion="15" checksum="120654014"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkElectronParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkElectronParticle> >"/>
+  <class name="edm::Ref<std::vector<l1extra::L1TkElectronParticle>,l1extra::L1TkElectronParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkElectronParticle>,l1extra::L1TkElectronParticle> >"/>
+
+
+  <class name="l1extra::L1TkJetParticle" ClassVersion="12">
+   <version ClassVersion="12" checksum="3425620994"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkJetParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkJetParticle> >"/>
+  <class name="edm::Ref<std::vector<l1extra::L1TkJetParticle>,l1extra::L1TkJetParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkJetParticle>,l1extra::L1TkJetParticle> >"/>
+
+  <class name="edm::RefProd< std::vector<l1extra::L1TkJetParticle> >"/>
+
+  <class name="l1extra::L1TkHTMissParticle" ClassVersion="11">
+   <version ClassVersion="11" checksum="2071485641"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkHTMissParticle>"/>
+ <class name="edm::Wrapper<l1extra::L1TkHTMissParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkHTMissParticle> >"/>
+
+  <class name="l1extra::L1TkMuonParticle" ClassVersion="13">
+   <version ClassVersion="13" checksum="434850848"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkMuonParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkMuonParticle> >"/>
+  <class name="edm::Ref<std::vector<l1extra::L1TkMuonParticle>,l1extra::L1TkMuonParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkMuonParticle>,l1extra::L1TkMuonParticle> >"/>
+
+  <class name="l1extra::L1TkTauParticle" ClassVersion="11">
+   <version ClassVersion="11" checksum="3831895525"/>
+  </class>
+  <class name="std::vector<l1extra::L1TkTauParticle>"/>
+  <class name="edm::Wrapper<std::vector<l1extra::L1TkTauParticle> >"/>
+  <class name="edm::Ref<std::vector<l1extra::L1TkTauParticle>,l1extra::L1TkTauParticle,edm::refhelper::FindUsingAdvance<std::vector<l1extra::L1TkTauParticle>,l1extra::L1TkTauParticle> >"/>
+
+
+
+
+
+
+</lcgdict>

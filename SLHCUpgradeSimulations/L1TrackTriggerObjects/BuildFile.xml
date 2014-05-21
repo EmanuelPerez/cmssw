@@ -1,0 +1,15 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/PluginManager"/>
+<use name="FWCore/ParameterSet"/>
+<use name="SimDataFormats/SLHC"/>
+<use name="DataFormats/L1TrackTrigger"/>
+<use name="SLHCUpgradeSimulations/L1TrackTrigger"/>
+<use name="SLHCUpgradeSimulations/L1CaloTrigger"/>
+<use name="DataFormats/JetReco"/>
+  <use   name="CommonTools/UtilAlgos"/>
+  <use   name="PhysicsTools/UtilAlgos"/>
+<use name="hepmc"/>
+<use name="root"/>
+<export>
+  <lib   name="1"/>
+</export>

@@ -39,7 +39,8 @@ HitMatchingAlgorithm_window2012_PixelDigi_ = cms.ESProducer("HitMatchingAlgorith
 # Window2013 hit matching algorithm
 HitMatchingAlgorithm_window2013_PixelDigi_ = cms.ESProducer("HitMatchingAlgorithm_window2013_PixelDigi_",
    minPtThreshold = cms.double(2.0),
-   zMatching = cms.bool(True),
+   #zMatching = cms.bool(True),
+   zMatching = cms.bool(False),
 )
 
 # Tab2013 hit matching algorithm

@@ -36,6 +36,7 @@ class L1TkTrack
     unsigned int                              theWedge;
     double                                    theChi2;
     edm::Ptr< SimTrack >                      theSimTrack;
+    int                                       theSimTrackId;
 
   public:
     /// Constructors
@@ -80,6 +81,9 @@ class L1TkTrack
     int                  findType() const;
     unsigned int         findSimTrackId() const;
 
+    int                  getSimTrackId() const;
+    void                 setSimTrackId( int aSimTrackId );
+
     /// Superstrip
     /// Here to prepare inclusion of AM L1 Track finding
     uint32_t getSuperStrip() const { return 0; }
@@ -119,6 +123,7 @@ L1TkTrack< T >::L1TkTrack()
   theSector   = 0;
   theWedge    = 0;
   theChi2     = 0;
+  theSimTrackId = 0;
 }
 
 /// Another Constructor
@@ -132,6 +137,7 @@ L1TkTrack< T >::L1TkTrack( std::vector< edm::Ptr< L1TkStub< T > > > aStubs )
   theSector   = 0;
   theWedge    = 0;
   theChi2     = 0;
+  theSimTrackId = 0;
 }
 
 /// Destructor
@@ -208,6 +214,15 @@ template< typename T >
 void L1TkTrack< T >::setChi2( double aChi2 )
 {
   theChi2 = aChi2;
+}
+
+// more MC truth
+template< typename T >
+int L1TkTrack< T >::getSimTrackId() const { return theSimTrackId; }
+
+template< typename T >
+void L1TkTrack< T >::setSimTrackId( int aSimTrackId ) {
+  theSimTrackId = aSimTrackId;
 }
 
 // MC truth

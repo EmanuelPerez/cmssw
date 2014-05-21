@@ -19,6 +19,8 @@
 #include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
 #include "Geometry/CommonTopologies/interface/Topology.h"
 
+#include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
 
 #include <vector>
 #include <ext/hash_map>
@@ -50,6 +52,8 @@ public:
   const GeomDetUnit*       idToDetUnit( StackedTrackerDetId anId , unsigned int stackMemberIdentifier ) const;
   const GeomDet*           idToDet( StackedTrackerDetId anId , unsigned int stackMemberIdentifier )     const;
 
+ /// Specific module properties
+  const bool isPSModule( StackedTrackerDetId anId ) const;
 
 //helper functions
   Plane::PlanePointer meanPlane(StackedTrackerDetId anId) const;

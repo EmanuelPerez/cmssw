@@ -62,6 +62,30 @@ const GeomDet* StackedTrackerGeometry::idToDet( StackedTrackerDetId anId ,
   return NULL;
 }
 
+
+const bool StackedTrackerGeometry::isPSModule( StackedTrackerDetId anId ) const
+{
+  const GeomDetUnit* det0 = this->idToDetUnit( anId, 0 );
+  const GeomDetUnit* det1 = this->idToDetUnit( anId, 1 );
+
+  /// Find pixel pitch and topology related information
+  const PixelGeomDetUnit* pix0 = dynamic_cast< const PixelGeomDetUnit* >( det0 );
+  const PixelGeomDetUnit* pix1 = dynamic_cast< const PixelGeomDetUnit* >( det1 );
+  const PixelTopology* top0 = dynamic_cast< const PixelTopology* >( &(pix0->specificTopology()) );
+  const PixelTopology* top1 = dynamic_cast< const PixelTopology* >( &(pix1->specificTopology()) );
+
+  /// Stop if the clusters are not in the same z-segment
+  int cols0 = top0->ncolumns();
+  int cols1 = top1->ncolumns();
+  int ratio = cols0/cols1; /// This assumes the ratio is integer!
+
+  if ( ratio == 1 )
+    return false;
+
+  return true;
+}
+
+
 Plane::PlanePointer StackedTrackerGeometry::meanPlane( StackedTrackerDetId anId ) const
 {
   double x = 0.0,  y = 0.0,  z = 0.0;

@@ -72,6 +72,14 @@
   <class pattern="L1TkTrack*" />
   <class pattern="std::vector<L1TkTrack*>" />
   <class pattern="edm::Wrapper<std::vector<L1TkTrack*>>" />
+	<!-- for L1TrackTriggerObjects -->
+  <class pattern="edm::Ptr<L1TkTrack*>"/>
+  <class pattern="std::vector<edm::Ptr<L1TkTrack*>>"/>
+  <class pattern="std::vector<std::vector<edm::Ptr<L1TkTrack*>>>"/>
+  <class pattern="edm::Wrapper<std::vector<std::vector<edm::Ptr<L1TkTrack*>>>>"/>
+  <class pattern="edm::Wrapper<edm::Ptr<L1TkTrack*>>" />
+
+  
 
   <!-- L1TStub -->
   <class pattern="L1TStub*"/>
@@ -187,6 +195,11 @@
   <class name="l1slhc::L1CaloClusterCollection" />
   <class name="edm::Wrapper<l1slhc::L1CaloClusterCollection>" />
 
+ <class name="l1slhc::L1CaloClusterWithSeed"/>
+ <class name="std::vector<l1slhc::L1CaloClusterWithSeed>"/>
+ <class name="l1slhc::L1CaloClusterWithSeedCollection"/>
+ <class name="edm::Wrapper<l1slhc::L1CaloClusterWithSeedCollection>"/>
+
   <class name="l1slhc::L1CaloJet" />
   <class name="std::vector<l1slhc::L1CaloJet>" />
   <class name="l1slhc::L1CaloJetCollection" />
@@ -196,6 +209,12 @@
   <class name="std::vector<l1slhc::L1TowerJet>" />
   <class name="l1slhc::L1TowerJetCollection" />
   <class name="edm::Wrapper<l1slhc::L1TowerJetCollection>" />
+
+  <class name="l1slhc::L1EGCrystalCluster" />
+  <class name="std::vector<l1slhc::L1EGCrystalCluster>" />
+  <class name="l1slhc::L1EGCrystalClusterCollection" />
+  <class name="edm::Wrapper<l1slhc::L1EGCrystalClusterCollection>" />
+
 
 </lcgdict>
 
